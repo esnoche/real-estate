@@ -1,7 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-
-const app = express();
+import router from "./routes/userRoutes.js";
 
 const connectToMongoDB = async () => {
   try {
@@ -11,8 +10,11 @@ const connectToMongoDB = async () => {
     console.log(error);
   }
 };
-
 connectToMongoDB();
+
+const app = express();
+
+app.use("/user", router);
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
