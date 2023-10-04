@@ -20,6 +20,17 @@ app.use(express.json());
 app.use("/user", router);
 app.use("/auth", authRouter);
 
+app.use((error, req, res, next)=>{
+  const statCode = error.statusCode || 500;
+  const msg = error.message || "Internal Server Error";
+
+  return res.status(statCode).json({
+    success: false,
+    statusCode: statCode,
+    message: msg,
+  });
+});
+
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });

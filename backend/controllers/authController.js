@@ -12,6 +12,7 @@ export const signup = async (req, res) => {
     await newUser.save();
     res.status(201).json("user created successfully.");
   } catch (error) {
-    res.status(500).json(error.message);
+    // res.status(500).json(error.message);
+    next(error);
   }
 };
