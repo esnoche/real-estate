@@ -6,12 +6,12 @@ import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSli
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
-  
+
   // const [error, setError] = useState(null);
   // const [loading, setLoading] = useState(false);
 
-  const {loading, error} = useSelector((state)=>state.user);
-  
+  const { loading, error } = useSelector((state) => state.user);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -59,7 +59,7 @@ export default function SignIn() {
 
       // setLoading(false);
       // setError(null);
-      
+
       dispatch(signInSuccess(data));
 
       navigate("/");
