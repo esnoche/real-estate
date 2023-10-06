@@ -1,6 +1,7 @@
 import { data } from "autoprefixer";
 import React, { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
+import OAuth from "../components/OAuth";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({});
@@ -65,10 +66,11 @@ export default function SignUp() {
 
       <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
         {error && <p className="text-red-500 m-3">{error}</p>}
-        <input type="text" placeholder='Username' className='border p-3 rounded-lg' id='userName' onChange={handleChange} />
+        <input type="text" placeholder='Username' className='border p-3 rounded-lg' id='username' onChange={handleChange} />
         <input type="email" placeholder='Email' className='border p-3 rounded-lg' id='email' onChange={handleChange} />
         <input type="password" placeholder='Password' className='border p-3 rounded-lg' id='password' onChange={handleChange} />
         <button disabled={loading} className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-75'>{loading ? "Signing Up.." : "Sign Up"}</button>
+        <OAuth />
       </form>
       <div className='flex gap-2 mt-5'>
         <p>

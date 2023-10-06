@@ -4,11 +4,11 @@ import { errorHandler } from "../utils/error.js";
 import jwt from "jsonwebtoken";
 
 export const signup = async (req, res, next) => {
-  const { userName, email, password } = req.body;
+  const { username, email, password } = req.body;
 
   const hashedPassword = bcryptjs.hashSync(password, 10); //no need of await because of hashSync
 
-  const newUser = new User({ userName, email, password: hashedPassword });
+  const newUser = new User({ username, email, password: hashedPassword });
 
   try {
     await newUser.save();
@@ -36,11 +36,38 @@ export const signin = async (req, res, next) => {
       return next(errorHandler(401, "Invalid Password"));
     }
 
-    const token = jwt.sign({id: existingUser._id}, "jjk");// similar as salting
+    const token = jwt.sign({id: existingUser._id}, "jjk");// similar as salting >>jwt_secret
 
     const {password: pass, ...rest} = existingUser._doc;// do not want to send the password to client
     
     res.cookie("access_token", token, {httpOnly: true}).status(200).json(rest);
+
+  } catch (error) {
+
+    next(error);
+
+  }
+}
+
+export const google = async (req, res, next) => {
+
+  try {
+
+    const existingUser = await User.findOne({ email: req.body.email });
+
+    if (existingUser) {
+      const token = jwt.sign({id: existingUser._id}, "jjk");
+      const {password: pass, ...rest} = existingUser._doc;
+      res.cookie("access_token", token, {httpOnly: true}).status(200).json(rest);
+    }else{
+      const generatePassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+      const hashedPassword = bcryptjs.hashSync(generatePassword, 10);
+      const newUser = new User({username: req.body.name.split(" ").join("").toLowerCase() + Math.random().toString(36).slice(-4), email: req.body.email, password: hashedPassword, avatar: req.body.photo});
+      await newUser.save();
+      const token = jwt.sign({id: newUser._id}, "jjk");
+      const {password: pass, ...rest} = newUser._doc;
+      res.cookie("access_token", token, {httpOnly: true}).status(200).json(rest);
+    }
 
   } catch (error) {
 
