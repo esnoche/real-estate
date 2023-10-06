@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import router from "./routes/userRoutes.js";
 import authRouter from "./routes/authRoutes.js";
+import cookieParser from "cookie-parser";
 
 const connectToMongoDB = async () => {
   try {
@@ -16,9 +17,14 @@ connectToMongoDB();
 const app = express();
 
 app.use(express.json());
-
+app.use(cookieParser());
 app.use("/api/user", router);
 app.use("/api/auth", authRouter);
+
+
+app.listen(3000, () => {
+  console.log("Server is running on port 3000");
+});
 
 app.use((error, req, res, next)=>{
   const statCode = error.statusCode || 500;
@@ -29,8 +35,4 @@ app.use((error, req, res, next)=>{
     statusCode: statCode,
     message: msg,
   });
-});
-
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
 });
