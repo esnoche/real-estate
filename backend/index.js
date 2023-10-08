@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import router from "./routes/userRoutes.js";
 import authRouter from "./routes/authRoutes.js";
 import cookieParser from "cookie-parser";
+import listingRouter from "./routes/listingRoutes.js";
 
 const connectToMongoDB = async () => {
   try {
@@ -18,8 +19,10 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+
 app.use("/api/user", router);
 app.use("/api/auth", authRouter);
+app.use("/api/listing", listingRouter);
 
 
 app.listen(3000, () => {
