@@ -1,5 +1,5 @@
-import User from "../models/userModel.js";
 import { errorHandler } from "../utils/error.js";
+import User from "../models/userModel.js";
 import bcryptjs from "bcryptjs"
 
 export const test = (req, res) => {
@@ -10,11 +10,11 @@ export const test = (req, res) => {
 
 
 export const updateUser = async (req, res, next) => {
-  if(req.user.id !== req.params.id){
+  if (req.user.id !== req.params.id) {
     return next(errorHandler(401, "access denied"));
   }
   try {
-    if(req.body.password){
+    if (req.body.password) {
       req.body.password = bcryptjs.hashSync(req.body.password, 10);
     }
 
@@ -24,14 +24,14 @@ export const updateUser = async (req, res, next) => {
         email: req.body.email,
         password: req.body.password,
         avatar: req.body.avatar,
-      }
-    }, {new: true})
+      },
+    }, { new: true });
 
-    const {password, ...rest}= updatedUser._doc;
+    const { password, ...rest } = updatedUser._doc;
 
     res.status(200).json(rest);
 
   } catch (error) {
     next(error);
   }
-}
+};
