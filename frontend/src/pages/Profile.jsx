@@ -2,6 +2,7 @@ import { updateUserStart, updateUserSuccess, updateUserFailure, deleteAccountFai
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage"
 import { useDispatch, useSelector } from 'react-redux'
 import React, { useEffect, useState } from 'react'
+import {Link} from "react-router-dom"
 import { app } from '../firebase';
 import { useRef } from 'react';
 
@@ -160,6 +161,8 @@ export default function Profile() {
         <input type="password" onChange={handleChange} placeholder='password' id='password' className='border p-3 rounded-lg' />
 
         <button disabled={loading} className='bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-85'>{loading ? "UPDATING.." : "UPDATE"}</button>
+
+        <Link to={"/create-listing" } className='bg-green-700 text-white p-3 rounded-lg uppercase text-center hover: opacity-95'>Create Listing</Link>
 
       </form>
 

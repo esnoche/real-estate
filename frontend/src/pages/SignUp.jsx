@@ -22,7 +22,7 @@ export default function SignUp() {
 
   };
 
-  console.log(formData);
+  // console.log(formData);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -51,7 +51,7 @@ export default function SignUp() {
       setError(null);
       navigate("/sign-in");
 
-      console.log(data);
+      // console.log(data);
 
     } catch (error) {
 
