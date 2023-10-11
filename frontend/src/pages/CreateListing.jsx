@@ -1,6 +1,62 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { app } from '../firebase';
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage"
 
 export default function CreateListing() {
+    const [pics, setPics] = useState([]);
+    const [formData, setFormData] = useState({
+        imageUrls: [],
+    });
+
+    console.log(formData);
+
+    const handlePicsUpload = (e) => {
+        if (pics.length > 0 && pics.length < 7) {
+
+            const promises = [];
+
+            for (let i = 0; i < pics.length; ++i) {
+                promises.push(storePics(pics[i]));
+            }
+            // async () => {
+            //     const urls = await Promise.all(promises);
+            //     setFormData({ ...formData, imageUrls: formData.imageUrls.concat(urls) });
+            // };
+            Promise.all(promises).then((urls)=> {
+                setFormData({...formData, imageUrls: formData.imageUrls.concat(urls)});
+            });
+        }
+    };
+
+    const storePics = async (file) => {
+        return new Promise((res, rej) => {
+            const storage = getStorage(app);
+
+            const fileName = new Date().getTime() + file.name;
+
+            const storageRef = ref(storage, fileName);
+
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            uploadTask.on("state_changed",
+                (snapshot) => {
+
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+
+                }, (error) => {
+
+                    rej(error);
+
+                }, async () => {
+
+                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+
+                    res(downloadURL);
+
+                }
+            );
+        })
+    }
     return (
         <main className='p-3 max-w-4xl mx-auto'>
 
@@ -84,8 +140,8 @@ export default function CreateListing() {
                         <span className='font-normal text-gray-600 ml-2'>The first image will be the cover(max 6)</span>
                     </p>
                     <div className='flex gap-4'>
-                        <input type="file" id='images' accept='image/*' multiple className='p-3 border border-gray-300 rounded w-full' />
-                        <button className='p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80'>Upload</button>
+                        <input type="file" onChange={(e) => setPics(e.target.files)} id='images' accept='image/*' multiple className='p-3 border border-gray-300 rounded w-full' />
+                        <button type='button' onClick={handlePicsUpload} className='p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80'>Upload</button>
                     </div>
                     <button className='p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80'>Create Listing</button>
                 </div>
